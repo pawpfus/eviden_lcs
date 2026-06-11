@@ -91,7 +91,6 @@
     font:inherit;font-size:13.5px;color:var(--ink);background:#fff;
     border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;
     transition:border .15s,box-shadow .15s;
-    text-transform: uppercase;
   }
   input:focus,textarea:focus,select:focus{outline:none;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(31,157,107,.14)}
   textarea{resize:vertical;min-height:120px;line-height:1.55;font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
@@ -505,7 +504,7 @@ function normPlat(s){
 /* ---------- judul string ---------- */
 function judul(r){
   let head=r.account?`(${r.platform} : ${r.account})`:`(${r.platform})`;
-  return `${r.no?r.no+' ':''}${head} ${r.title||''}`.trim().toUpperCase();
+  return `${r.no?r.no+' ':''}${head} ${r.title||''}`.trim();
 }
 
 /* ---------- group by date for merged cells ---------- */
@@ -549,7 +548,7 @@ function bannerHTML(){return '<div class="banner"><div class="t1">LAPORAN PENDER
 function idBlockHTML(){
   const id=state.id;
   const rows=[['BULAN',id.bulan],['NAMA PENYULUH',id.nama],['NIP',id.nip],['WILAYAH BINAAN',id.wilbin],['INSTANSI/BPP',id.instansi],['KECAMATAN',id.kecamatan],['KABUPATEN/PROVINSI',id.kabprov]];
-  return '<div class="idblock">'+rows.map(([k,v])=>`<div class="p-id"><span class="k">${k}</span><span class="c">:</span><span class="v">${esc((v||'').toUpperCase())}</span></div>`).join('')+'</div>';
+  return '<div class="idblock">'+rows.map(([k,v])=>`<div class="p-id"><span class="k">${k}</span><span class="c">:</span><span class="v">${esc(v||'')}</span></div>`).join('')+'</div>';
 }
 function evImg(r,t){return r[t]?`<img src="${r[t]}">`:'';}
 function trHTML(r,dateCell){
@@ -647,7 +646,7 @@ async function exportExcel(){
       [`A${dr}`,`A${dr+1}`].forEach(c=>{const cell=ws.getCell(c);cell.font={bold:true,size:c.includes('A'+dr)?12:11,name:'Times New Roman'};cell.alignment={horizontal:'center',vertical:'middle'};});
       dr += 3;
       const idRows=[['BULAN',id.bulan],['NAMA PENYULUH',id.nama],['NIP',id.nip],['WILAYAH BINAAN',id.wilbin],['INSTANSI/BPP',id.instansi],['KECAMATAN',id.kecamatan],['KABUPATEN/PROVINSI',id.kabprov]];
-      idRows.forEach(([k,v])=>{ws.getCell('A'+dr).value=k;ws.getCell('B'+dr).value=': '+(v||'').toUpperCase();ws.getCell('A'+dr).font={name:'Times New Roman',size:10,bold:false};ws.getCell('B'+dr).font={name:'Times New Roman',size:10,bold:false};dr++;});
+      idRows.forEach(([k,v])=>{ws.getCell('A'+dr).value=k;ws.getCell('B'+dr).value=': '+(v||'');ws.getCell('A'+dr).font={name:'Times New Roman',size:10,bold:false};ws.getCell('B'+dr).font={name:'Times New Roman',size:10,bold:false};dr++;});
       dr++; // gap
     }
 
