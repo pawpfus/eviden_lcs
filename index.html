@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <title>EVIDEN LCS</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f3d2e">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icon.png" type="image/png">
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -25,7 +28,7 @@
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{
-    font-family:'Times New Roman', Times, serif;
+    font-family: 'Instrument Sans', sans-serif;
     background:
       radial-gradient(1200px 500px at 100% -10%,rgba(31,157,107,.10),transparent 60%),
       radial-gradient(900px 400px at -10% 0%,rgba(217,164,65,.08),transparent 55%),
@@ -192,7 +195,7 @@
   <div class="topbar-inner">
     <div class="brand">
       <div class="logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c0-6 0-10 6-14"/><path d="M6 4c8 0 12 4 12 10-8 0-12-4-12-10z"/></svg>
+        <img src="icon.png" alt="Logo" style="width:100%;height:100%;border-radius:inherit;display:block">
       </div>
       <div>
         <h1>EVIDEN LCS</h1>
@@ -522,7 +525,7 @@ function grouped(){
 const PRINT_CSS=`
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#fff}
-body{font-family:'Times New Roman', Times, serif;color:#000}
+body{font-family: 'Instrument Sans', sans-serif;color:#000}
 @page{size:A4;margin:0}
 .sheet{width:794px;min-height:1123px;padding:49px 42px 60px;position:relative;page-break-after:always;overflow:hidden}
 .sheet:last-child{page-break-after:auto}
@@ -643,10 +646,10 @@ async function exportExcel(){
       ws.mergeCells(`A${dr}:E${dr}`);ws.getCell(`A${dr}`).value='LAPORAN PENDERASAN INFORMASI DAN PEMBANGUNAN PERTANIAN';
       ws.mergeCells(`A${dr+1}:E${dr+1}`);ws.getCell(`A${dr+1}`).value='PENYULUH PERTANIAN TAHUN 2026';
       ws.getRow(dr).height=20;ws.getRow(dr+1).height=18;
-      [`A${dr}`,`A${dr+1}`].forEach(c=>{const cell=ws.getCell(c);cell.font={bold:true,size:c.includes('A'+dr)?12:11,name:'Times New Roman'};cell.alignment={horizontal:'center',vertical:'middle'};});
+      [`A${dr}`,`A${dr+1}`].forEach(c=>{const cell=ws.getCell(c);cell.font={bold:true,size:c.includes('A'+dr)?12:11,name:'Instrument Sans'};cell.alignment={horizontal:'center',vertical:'middle'};});
       dr += 3;
       const idRows=[['BULAN',id.bulan],['NAMA PENYULUH',id.nama],['NIP',id.nip],['WILAYAH BINAAN',id.wilbin],['INSTANSI/BPP',id.instansi],['KECAMATAN',id.kecamatan],['KABUPATEN/PROVINSI',id.kabprov]];
-      idRows.forEach(([k,v])=>{ws.getCell('A'+dr).value=k;ws.getCell('B'+dr).value=': '+(v||'');ws.getCell('A'+dr).font={name:'Times New Roman',size:10,bold:false};ws.getCell('B'+dr).font={name:'Times New Roman',size:10,bold:false};dr++;});
+      idRows.forEach(([k,v])=>{ws.getCell('A'+dr).value=k;ws.getCell('B'+dr).value=': '+(v||'');ws.getCell('A'+dr).font={name:'Instrument Sans',size:10,bold:false};ws.getCell('B'+dr).font={name:'Instrument Sans',size:10,bold:false};dr++;});
       dr++; // gap
     }
 
@@ -656,7 +659,7 @@ async function exportExcel(){
     ws.mergeCells(`B${hr}:B${hr+1}`);ws.getCell('B'+hr).value='JUDUL KONTEN';
     ws.mergeCells(`C${hr}:E${hr}`);ws.getCell('C'+hr).value='EVIDEN';
     ws.getCell('C'+(hr+1)).value='LIKE';ws.getCell('D'+(hr+1)).value='COMMENT';ws.getCell('E'+(hr+1)).value='SHARE';
-    for(let c=1;c<=5;c++){[hr,hr+1].forEach(rw=>{const cell=ws.getCell(rw,c);cell.font={bold:false,name:'Times New Roman',size:10};cell.alignment=center;cell.border=border;});}
+    for(let c=1;c<=5;c++){[hr,hr+1].forEach(rw=>{const cell=ws.getCell(rw,c);cell.font={bold:false,name:'Instrument Sans',size:10};cell.alignment=center;cell.border=border;});}
     dr = hr + 2;
 
     // data
@@ -671,9 +674,9 @@ async function exportExcel(){
     for(const g of gPage){
       const start=dr;
       for(const r of g.items){
-        const tCell=ws.getCell('B'+dr);tCell.value=judul(r);tCell.alignment={vertical:'middle',wrapText:true};tCell.font={name:'Times New Roman',size:10};
+        const tCell=ws.getCell('B'+dr);tCell.value=judul(r);tCell.alignment={vertical:'middle',wrapText:true};tCell.font={name:'Instrument Sans',size:10};
         ['A','B','C','D','E'].forEach(c=>ws.getCell(c+dr).border=border);
-        ws.getCell('A'+dr).alignment=center;ws.getCell('A'+dr).font={name:'Times New Roman',size:10};
+        ws.getCell('A'+dr).alignment=center;ws.getCell('A'+dr).font={name:'Instrument Sans',size:10};
         let maxImgH=58;
         for(const [type,col] of [['like',2],['comment',3],['share',4]]){
           if(r[type]){
