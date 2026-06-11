@@ -15,6 +15,10 @@
     --shadow:0 1px 2px rgba(16,40,30,.06),0 8px 24px rgba(16,40,30,.07);
     --radius:16px;
   }
+  body.dark{
+    --bg:#121b17; --card:#1a2520; --ink:#eafff5; --muted:#a0b0a8; --line:#2a3630;
+    --soft:#213029; --shadow:0 8px 24px rgba(0,0,0,.35);
+  }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{
@@ -24,7 +28,12 @@
       radial-gradient(900px 400px at -10% 0%,rgba(217,164,65,.08),transparent 55%),
       var(--bg);
     color:var(--ink); -webkit-font-smoothing:antialiased; line-height:1.5;
+    transition: background 0.3s, color 0.3s;
   }
+  body.dark select, body.dark input, body.dark textarea{ background: #213029; color: #eafff5; border-color: var(--line); }
+  body.dark .card-head{ background: linear-gradient(180deg, #1d2b24, #1a2520); }
+  body.dark .entry{ background: #1d2b24; }
+  body.dark .btn-line{ background: #213029; color: #eafff5; }
   /* ---------- Top bar ---------- */
   .topbar{
     position:sticky;top:0;z-index:50;
@@ -79,6 +88,7 @@
     font:inherit;font-size:13.5px;color:var(--ink);background:#fff;
     border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;
     transition:border .15s,box-shadow .15s;
+    text-transform: uppercase;
   }
   input:focus,textarea:focus,select:focus{outline:none;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(31,157,107,.14)}
   textarea{resize:vertical;min-height:120px;line-height:1.55;font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
@@ -145,14 +155,14 @@
     .card-head{padding:13px 14px}
     .card-body{padding:15px}
     .step{display:none}
-    .topbar-inner{padding:10px 12px;gap:8px 10px;flex-wrap:wrap}
-    .brand{flex:1 1 auto}
+    .topbar-inner{padding:10px 12px;gap:6px 8px;flex-wrap:wrap;justify-content:space-between}
+    .brand{flex:1 1 100%;margin-bottom:2px}
     .brand h1{font-size:14px;white-space:normal;line-height:1.15}
     .brand p{display:none}
+    .spacer{display:none}
     .logo{width:34px;height:34px;border-radius:9px}
     .logo svg{width:20px;height:20px}
-    .spacer{display:none}
-    .btn{padding:9px 12px;font-size:12.5px;flex:0 0 auto}
+    .btn{padding:8px 10px;font-size:12px;flex:1 1 auto;justify-content:center}
     .entry-fields{grid-template-columns:1fr 1fr}
     .eviden{padding:0 14px 14px}
     /* 16px inputs prevent iOS auto-zoom on focus */
@@ -188,6 +198,10 @@
     </div>
     <div class="spacer"></div>
     <div class="save-pill"><span class="save-dot" id="saveDot"></span><span id="saveTxt">Tersimpan otomatis</span></div>
+    <button class="btn btn-ghost" onclick="toggleTheme()" title="Ganti Tema">
+      <svg id="sun" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg id="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    </button>
     <button class="btn btn-ghost" onclick="resetAll()" title="Mulai dari awal">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Reset
     </button>
@@ -488,7 +502,7 @@ function normPlat(s){
 /* ---------- judul string ---------- */
 function judul(r){
   let head=r.account?`(${r.platform} : ${r.account})`:`(${r.platform})`;
-  return `${r.no?r.no+' ':''}${head} ${r.title||''}`.trim();
+  return `${r.no?r.no+' ':''}${head} ${r.title||''}`.trim().toUpperCase();
 }
 
 /* ---------- group by date for merged cells ---------- */
@@ -532,7 +546,7 @@ function bannerHTML(){return '<div class="banner"><div class="t1">LAPORAN PENDER
 function idBlockHTML(){
   const id=state.id;
   const rows=[['BULAN',id.bulan],['NAMA PENYULUH',id.nama],['NIP',id.nip],['WILAYAH BINAAN',id.wilbin],['INSTANSI/BPP',id.instansi],['KECAMATAN',id.kecamatan],['KABUPATEN/PROVINSI',id.kabprov]];
-  return '<div class="idblock">'+rows.map(([k,v])=>`<div class="p-id"><span class="k">${k}</span><span class="c">:</span><span class="v">${esc(v||'')}</span></div>`).join('')+'</div>';
+  return '<div class="idblock">'+rows.map(([k,v])=>`<div class="p-id"><span class="k">${k}</span><span class="c">:</span><span class="v">${esc((v||'').toUpperCase())}</span></div>`).join('')+'</div>';
 }
 function evImg(r,t){return r[t]?`<img src="${r[t]}">`:'';}
 function trHTML(r,dateCell){
@@ -613,7 +627,8 @@ async function exportExcel(){
 
   const dimCache={};
   const dimsOf=u=>dimCache[u]||(dimCache[u]=new Promise(res=>{const im=new Image();im.onload=()=>res({w:im.naturalWidth||120,h:im.naturalHeight||150});im.onerror=()=>res({w:120,h:150});im.src=u;}));
-  const CELLW=166,MAXH=400,COLPX=166;
+  // width 23 in ExcelJS is ~170px. We use 165 for safety to avoid overlap.
+  const CELLW=165,MAXH=400,COLPX=170;
 
   let dr = 1;
   const itemsPerPage = 3;
@@ -629,7 +644,7 @@ async function exportExcel(){
       [`A${dr}`,`A${dr+1}`].forEach(c=>{const cell=ws.getCell(c);cell.font={bold:true,size:c.includes('A'+dr)?12:11,name:'Times New Roman'};cell.alignment={horizontal:'center',vertical:'middle'};});
       dr += 3;
       const idRows=[['BULAN',id.bulan],['NAMA PENYULUH',id.nama],['NIP',id.nip],['WILAYAH BINAAN',id.wilbin],['INSTANSI/BPP',id.instansi],['KECAMATAN',id.kecamatan],['KABUPATEN/PROVINSI',id.kabprov]];
-      idRows.forEach(([k,v])=>{ws.getCell('A'+dr).value=k;ws.getCell('B'+dr).value=': '+(v||'');ws.getCell('A'+dr).font={name:'Times New Roman',size:10};ws.getCell('B'+dr).font={name:'Times New Roman',size:10,bold:false};dr++;});
+      idRows.forEach(([k,v])=>{ws.getCell('A'+dr).value=k;ws.getCell('B'+dr).value=': '+(v||'').toUpperCase();ws.getCell('A'+dr).font={name:'Times New Roman',size:10};ws.getCell('B'+dr).font={name:'Times New Roman',size:10,bold:false};dr++;});
       dr++; // gap
     }
 
@@ -716,7 +731,20 @@ document.getElementById('instansi').addEventListener('blur',function(){
 });
 window.addRow=addRow;window.delRow=delRow;window.clearRows=clearRows;window.field=field;
 window.pickImage=pickImage;window.removeImage=removeImage;window.doImport=doImport;window.pasteClipboard=pasteClipboard;
-window.downloadPDF=downloadPDF;window.exportExcel=exportExcel;window.resetAll=resetAll;
+function toggleTheme(){
+  document.body.classList.toggle('dark');
+  const isDark=document.body.classList.contains('dark');
+  localStorage.setItem('theme',isDark?'dark':'light');
+  updateThemeIcons();
+}
+function updateThemeIcons(){
+  const isDark=document.body.classList.contains('dark');
+  document.getElementById('sun').style.display=isDark?'block':'none';
+  document.getElementById('moon').style.display=isDark?'none':'block';
+}
+if(localStorage.getItem('theme')==='dark'){document.body.classList.add('dark');}
+updateThemeIcons();
+window.downloadPDF=downloadPDF;window.exportExcel=exportExcel;window.resetAll=resetAll;window.toggleTheme=toggleTheme;
 load();
 </script>
 </body>
