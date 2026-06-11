@@ -374,7 +374,7 @@ function pickImage(rid,type){pendingUpload={rid,type};document.getElementById('f
 function removeImage(rid,type){const r=state.rows.find(x=>x.rid===rid);if(r){r[type]=null;render();save();}}
 document.getElementById('fileInput').addEventListener('change',function(e){
   const f=e.target.files[0];if(!f||!pendingUpload)return;
-  resizeImage(f,1500,2200,0.92).then(dataUrl=>{
+  resizeImage(f,2000,3000,0.95).then(dataUrl=>{
     const r=state.rows.find(x=>x.rid===pendingUpload.rid);
     if(r){r[pendingUpload.type]=dataUrl;render();save();}
     pendingUpload=null;this.value='';
@@ -489,16 +489,16 @@ body{font-family:Arial,Helvetica,sans-serif;color:#000}
 .sheet{width:794px;min-height:1123px;padding:49px 42px 60px;position:relative;page-break-after:always;overflow:hidden}
 .sheet:last-child{page-break-after:auto}
 .banner{text-align:center;padding:2px 10px 10px;margin-bottom:8px}
-.banner .t1{font-weight:700;font-size:17px;letter-spacing:.3px;line-height:1.25}
-.banner .t2{font-weight:700;font-size:15px;margin-top:3px}
+.banner .t1{font-weight:400;font-size:17px;letter-spacing:.3px;line-height:1.25}
+.banner .t2{font-weight:400;font-size:15px;margin-top:3px}
 .idblock{margin:0 0 12px}
 .p-id{display:flex;font-size:13px;line-height:1.5}
 .p-id .k{width:175px;flex:0 0 175px;text-transform:uppercase}
 .p-id .c{width:14px;flex:0 0 14px}
 table.rpt{width:710px;border-collapse:collapse;font-size:12px;table-layout:fixed}
 table.rpt th,table.rpt td{border:1px solid #000;padding:5px 6px;vertical-align:middle;word-wrap:break-word;overflow-wrap:break-word}
-table.rpt th{text-align:center;font-weight:700;white-space:nowrap}
-.p-date{text-align:center;font-weight:600}
+table.rpt th{text-align:center;font-weight:400;white-space:nowrap}
+.p-date{text-align:center;font-weight:400}
 .p-judul{vertical-align:top;text-align:left}
 .p-ev{text-align:center;padding:4px}
 .p-ev img{max-width:140px;max-height:250px;object-fit:contain;display:inline-block}
@@ -578,7 +578,7 @@ async function downloadPDF(){
     const {jsPDF}=window.jspdf;
     const pdf=new jsPDF('p','pt','a4');
     const W=pdf.internal.pageSize.getWidth(),H=pdf.internal.pageSize.getHeight();
-    const scale=Math.min(4,Math.max(3,(window.devicePixelRatio||1)*2));
+    const scale=5;
     for(let i=0;i<sheetEls.length;i++){
       const canvas=await html2canvas(sheetEls[i],{scale,backgroundColor:'#ffffff',useCORS:true,logging:false,imageTimeout:0});
       const img=canvas.toDataURL('image/jpeg',0.96);
@@ -608,21 +608,21 @@ async function exportExcel(){
   ws.mergeCells('A1:E1');ws.getCell('A1').value='LAPORAN PENDERASAN INFORMASI DAN PEMBANGUNAN PERTANIAN';
   ws.mergeCells('A2:E2');ws.getCell('A2').value='PENYULUH PERTANIAN TAHUN 2026';
   ws.getRow(1).height=20;ws.getRow(2).height=18;
-  ['A1','A2'].forEach(c=>{const cell=ws.getCell(c);cell.font={bold:true,size:c==='A1'?12:11,name:'Arial'};cell.alignment={horizontal:'center',vertical:'middle'};});
+  ['A1','A2'].forEach(c=>{const cell=ws.getCell(c);cell.font={bold:false,size:c==='A1'?12:11,name:'Arial'};cell.alignment={horizontal:'center',vertical:'middle'};});
   const idRows=[['BULAN',id.bulan],['NAMA PENYULUH',id.nama],['NIP',id.nip],['WILAYAH BINAAN',id.wilbin],['INSTANSI/BPP',id.instansi],['KECAMATAN',id.kecamatan],['KABUPATEN/PROVINSI',id.kabprov]];
   let rr=4;
-  idRows.forEach(([k,v])=>{ws.getCell('A'+rr).value=k;ws.getCell('B'+rr).value=': '+(v||'');ws.getCell('A'+rr).font={name:'Arial',size:10};ws.getCell('B'+rr).font={name:'Arial',size:10,bold:true};rr++;});
+  idRows.forEach(([k,v])=>{ws.getCell('A'+rr).value=k;ws.getCell('B'+rr).value=': '+(v||'');ws.getCell('A'+rr).font={name:'Arial',size:10};ws.getCell('B'+rr).font={name:'Arial',size:10,bold:false};rr++;});
   // header
   const hr=rr+1; // leave a gap row
   ws.mergeCells(`A${hr}:A${hr+1}`);ws.getCell('A'+hr).value='TANGGAL';
   ws.mergeCells(`B${hr}:B${hr+1}`);ws.getCell('B'+hr).value='JUDUL KONTEN';
   ws.mergeCells(`C${hr}:E${hr}`);ws.getCell('C'+hr).value='EVIDEN';
   ws.getCell('C'+(hr+1)).value='LIKE';ws.getCell('D'+(hr+1)).value='COMMENT';ws.getCell('E'+(hr+1)).value='SHARE';
-  for(let c=1;c<=5;c++){[hr,hr+1].forEach(rw=>{const cell=ws.getCell(rw,c);cell.font={bold:true,name:'Arial',size:10};cell.alignment=center;cell.border=border;});}
+  for(let c=1;c<=5;c++){[hr,hr+1].forEach(rw=>{const cell=ws.getCell(rw,c);cell.font={bold:false,name:'Arial',size:10};cell.alignment=center;cell.border=border;});}
   // data
   const dimCache={};
   const dimsOf=u=>dimCache[u]||(dimCache[u]=new Promise(res=>{const im=new Image();im.onload=()=>res({w:im.naturalWidth||120,h:im.naturalHeight||150});im.onerror=()=>res({w:120,h:150});im.src=u;}));
-  const CELLW=150,MAXH=250,COLPX=161; // px box per eviden cell (col width 23 ≈ 161px)
+  const CELLW=161,MAXH=400,COLPX=161; // px box per eviden cell (col width 23 ≈ 161px)
   let dr=hr+2;
   for(const g of grouped()){
     const start=dr;
@@ -639,8 +639,8 @@ async function exportExcel(){
             const w2=Math.round(d.w*ratio),h2=Math.round(d.h*ratio);
             const ext=r[type].includes('image/png')?'png':'jpeg';
             const imgId=wb.addImage({base64:r[type].split(',')[1],extension:ext});
-            const offX=(COLPX-w2)/2/64; // center within the eviden column
-            ws.addImage(imgId,{tl:{col:col+Math.max(0.04,offX),row:dr-1+0.04},ext:{width:w2,height:h2},editAs:'oneCell'});
+            const offX=0; // fill column
+            ws.addImage(imgId,{tl:{col:col+0.04,row:dr-1+0.04},ext:{width:w2,height:h2},editAs:'oneCell'});
             if(h2>maxImgH)maxImgH=h2;
           }catch(e){}
         }
