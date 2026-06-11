@@ -211,7 +211,23 @@
     </div>
     <div class="card-body">
       <div class="grid">
-        <div class="field"><label>Bulan</label><input type="text" id="bulan" placeholder="MEI"></div>
+        <div class="field">
+          <label>Bulan</label>
+          <select id="bulan">
+            <option value="JANUARI">JANUARI</option>
+            <option value="FEBRUARI">FEBRUARI</option>
+            <option value="MARET">MARET</option>
+            <option value="APRIL">APRIL</option>
+            <option value="MEI">MEI</option>
+            <option value="JUNI">JUNI</option>
+            <option value="JULI">JULI</option>
+            <option value="AGUSTUS">AGUSTUS</option>
+            <option value="SEPTEMBER">SEPTEMBER</option>
+            <option value="OKTOBER">OKTOBER</option>
+            <option value="NOVEMBER">NOVEMBER</option>
+            <option value="DESEMBER">DESEMBER</option>
+          </select>
+        </div>
         <div class="field"><label>Nama Penyuluh</label><input type="text" id="nama" placeholder="Nama lengkap"></div>
         <div class="field"><label>NIP</label><input type="text" id="nip" placeholder="NIP"></div>
         <div class="field"><label>Wilayah Binaan</label><input type="text" id="wilbin" placeholder="Desa / WKPP"></div>
@@ -501,7 +517,7 @@ table.rpt th{text-align:center;font-weight:400;white-space:nowrap}
 .p-date{text-align:center;font-weight:400}
 .p-judul{vertical-align:top;text-align:left}
 .p-ev{text-align:center;padding:4px}
-.p-ev img{max-width:140px;max-height:250px;object-fit:contain;display:inline-block}
+.p-ev img{width:100%;max-height:300px;object-fit:contain;display:block;margin:0 auto}
 .foot{position:absolute;left:42px;right:42px;bottom:26px;text-align:right;font-size:11px}
 `;
 const COLG='<colgroup><col style="width:68px"><col><col style="width:148px"><col style="width:148px"><col style="width:148px"></colgroup>';
@@ -622,7 +638,7 @@ async function exportExcel(){
   // data
   const dimCache={};
   const dimsOf=u=>dimCache[u]||(dimCache[u]=new Promise(res=>{const im=new Image();im.onload=()=>res({w:im.naturalWidth||120,h:im.naturalHeight||150});im.onerror=()=>res({w:120,h:150});im.src=u;}));
-  const CELLW=161,MAXH=400,COLPX=161; // px box per eviden cell (col width 23 ≈ 161px)
+  const CELLW=166,MAXH=400,COLPX=166; // px box per eviden cell (col width 23 ≈ 166px)
   let dr=hr+2;
   for(const g of grouped()){
     const start=dr;
@@ -639,8 +655,8 @@ async function exportExcel(){
             const w2=Math.round(d.w*ratio),h2=Math.round(d.h*ratio);
             const ext=r[type].includes('image/png')?'png':'jpeg';
             const imgId=wb.addImage({base64:r[type].split(',')[1],extension:ext});
-            const offX=0; // fill column
-            ws.addImage(imgId,{tl:{col:col+0.04,row:dr-1+0.04},ext:{width:w2,height:h2},editAs:'oneCell'});
+            const offX = (COLPX - w2) / 2; // px
+            ws.addImage(imgId,{tl:{col:col+(offX/COLPX),row:dr-1+0.04},ext:{width:w2,height:h2},editAs:'oneCell'});
             if(h2>maxImgH)maxImgH=h2;
           }catch(e){}
         }
