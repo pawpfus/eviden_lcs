@@ -79,7 +79,6 @@
     font:inherit;font-size:13.5px;color:var(--ink);background:#fff;
     border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;
     transition:border .15s,box-shadow .15s;
-    text-transform:uppercase;
   }
   input:focus,textarea:focus,select:focus{outline:none;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(31,157,107,.14)}
   textarea{resize:vertical;min-height:120px;line-height:1.55;font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
@@ -115,7 +114,7 @@
   .entry-main{flex:1;padding:14px 16px;min-width:0}
   .entry-fields{display:grid;grid-template-columns:130px 1fr 150px;gap:10px;margin-bottom:10px}
   .entry-fields .field-sm{display:flex;flex-direction:column;gap:4px}
-  .entry-fields label{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:#85968d}
+  .entry-fields label{font-size:10.5px;letter-spacing:.4px;color:#85968d}
   .entry-fields input,.entry-fields select{padding:8px 10px;font-size:12.5px}
   .del-btn{flex:0 0 auto;align-self:flex-start;margin:12px 12px 0 0;background:#fff;border:1px solid var(--line);color:var(--danger);width:30px;height:30px;border-radius:8px;cursor:pointer;display:grid;place-items:center;transition:.15s}
   .del-btn:hover{background:#fdecea;border-color:#f0b8b1}
@@ -313,9 +312,7 @@ let pendingUpload=null; // {rowId, type}
 /* ---------- persistence ---------- */
 function save(){
   state.id={};Object.keys(DEFAULTS).forEach(k=>{
-    let v = val(k);
-    if(typeof v === 'string') v = v.toUpperCase();
-    state.id[k] = v;
+    state.id[k] = val(k);
   });
   try{localStorage.setItem(KEY,JSON.stringify(state));flashSave();}catch(e){toast('Penyimpanan penuh (gambar terlalu besar)',true);}
 }
@@ -328,11 +325,9 @@ function load(){
   render();
 }
 function val(id){
-  let v = document.getElementById(id).value;
-  return (typeof v === 'string') ? v.toUpperCase() : v;
+  return document.getElementById(id).value;
 }
 function setVal(id,v){
-  if(typeof v === 'string') v = v.toUpperCase();
   document.getElementById(id).value=v||'';
 }
 let saveTimer=null;
@@ -358,7 +353,7 @@ function addRow(data){
 }
 function delRow(rid){state.rows=state.rows.filter(r=>r.rid!==rid);render();save();}
 function clearRows(){if(state.rows.length&&!confirm('Kosongkan seluruh daftar konten?'))return;state.rows=[];render();save();}
-function field(rid,k,v){const r=state.rows.find(x=>x.rid===rid);if(r){if(typeof v==='string')v=v.toUpperCase();r[k]=v;save();if(k==='date')render();}}
+function field(rid,k,v){const r=state.rows.find(x=>x.rid===rid);if(r){r[k]=v;save();if(k==='date')render();}}
 
 function render(){
   const box=document.getElementById('rows');
@@ -520,7 +515,7 @@ body{font-family:'Times New Roman', Times, serif;color:#000}
 .banner .t2{font-weight:700;font-size:15px;margin-top:3px}
 .idblock{margin:0 0 12px}
 .p-id{display:flex;font-size:13px;line-height:1.5}
-.p-id .k{width:175px;flex:0 0 175px;text-transform:uppercase}
+.p-id .k{width:175px;flex:0 0 175px}
 .p-id .c{width:14px;flex:0 0 14px}
 table.rpt{width:710px;border-collapse:collapse;font-size:12px;table-layout:fixed}
 table.rpt th,table.rpt td{border:1px solid #000;padding:5px 6px;vertical-align:middle;word-wrap:break-word;overflow-wrap:break-word}
@@ -561,31 +556,15 @@ function imagesReady(root){
   return Promise.all(imgs.map(im=>im.complete?Promise.resolve():new Promise(res=>{im.onload=im.onerror=res;})));
 }
 async function paginate(){
-  const USABLE=1123-49-60; // inner content height of a sheet
-  // measure header block + thead + each row height at real content width
-  const meas=document.createElement('div');
-  meas.style.cssText='position:fixed;left:-10000px;top:0;width:794px;visibility:hidden';
-  const measRows=state.rows.map(r=>trHTML(r,`<td class="p-date">${esc(r.date||'')}</td>`)).join('');
-  meas.innerHTML=`<style>${PRINT_CSS}</style><div class="sheet"><div class="hdr">${bannerHTML()}${idBlockHTML()}</div><table class="rpt">${COLG}${THEAD}<tbody>${measRows}</tbody></table></div>`;
-  document.body.appendChild(meas);
-  await imagesReady(meas);
-  const headH=meas.querySelector('.hdr').offsetHeight+12;
-  const theadH=meas.querySelector('thead').offsetHeight;
-  const rowHs=[...meas.querySelectorAll('tbody tr')].map(tr=>tr.offsetHeight);
-  meas.remove();
-  // distribute rows into pages
-  const pages=[];let cur=[],curH=0;
-  for(let i=0;i<state.rows.length;i++){
-    const isFirst=pages.length===0;
-    const budget=USABLE-theadH-(isFirst?headH:0);
-    if(cur.length>0&&curH+rowHs[i]>budget){pages.push(cur);cur=[];curH=0;}
-    cur.push(state.rows[i]);curH+=rowHs[i];
+  const itemsPerPage = 3;
+  const pages = [];
+  for (let i = 0; i < state.rows.length; i += itemsPerPage) {
+    pages.push(state.rows.slice(i, i + itemsPerPage));
   }
-  if(cur.length)pages.push(cur);
-  const N=pages.length||1;
-  return pages.map((rows,pi)=>{
-    const head=pi===0?`${bannerHTML()}${idBlockHTML()}`:'';
-    return `<div class="sheet">${head}<table class="rpt">${COLG}${THEAD}<tbody>${tbodyHTML(rows)}</tbody></table><div class="foot">hal ${pi+1} dari ${N}</div></div>`;
+  const N = pages.length || 1;
+  return pages.map((rows, pi) => {
+    const head = pi === 0 ? `${bannerHTML()}${idBlockHTML()}` : '';
+    return `<div class="sheet">${head}<table class="rpt">${COLG}${THEAD}<tbody>${tbodyHTML(rows)}</tbody></table><div class="foot">hal ${pi + 1} dari ${N}</div></div>`;
   }).join('');
 }
 function fileBase(){return ('EVIDEN LCS '+(state.id.bulan||'').replace(/^BULAN\s+/i,'')).trim();}
@@ -631,52 +610,79 @@ async function exportExcel(){
   const thin={style:'thin',color:{argb:'FF000000'}};
   const border={top:thin,left:thin,bottom:thin,right:thin};
   const center={vertical:'middle',horizontal:'center',wrapText:true};
-  // title
-  ws.mergeCells('A1:E1');ws.getCell('A1').value='LAPORAN PENDERASAN INFORMASI DAN PEMBANGUNAN PERTANIAN';
-  ws.mergeCells('A2:E2');ws.getCell('A2').value='PENYULUH PERTANIAN TAHUN 2026';
-  ws.getRow(1).height=20;ws.getRow(2).height=18;
-  ['A1','A2'].forEach(c=>{const cell=ws.getCell(c);cell.font={bold:true,size:c==='A1'?12:11,name:'Times New Roman'};cell.alignment={horizontal:'center',vertical:'middle'};});
-  const idRows=[['BULAN',id.bulan],['NAMA PENYULUH',id.nama],['NIP',id.nip],['WILAYAH BINAAN',id.wilbin],['INSTANSI/BPP',id.instansi],['KECAMATAN',id.kecamatan],['KABUPATEN/PROVINSI',id.kabprov]];
-  let rr=4;
-  idRows.forEach(([k,v])=>{ws.getCell('A'+rr).value=k;ws.getCell('B'+rr).value=': '+(v||'');ws.getCell('A'+rr).font={name:'Times New Roman',size:10};ws.getCell('B'+rr).font={name:'Times New Roman',size:10,bold:false};rr++;});
-  // header
-  const hr=rr+1; // leave a gap row
-  ws.mergeCells(`A${hr}:A${hr+1}`);ws.getCell('A'+hr).value='TANGGAL';
-  ws.mergeCells(`B${hr}:B${hr+1}`);ws.getCell('B'+hr).value='JUDUL KONTEN';
-  ws.mergeCells(`C${hr}:E${hr}`);ws.getCell('C'+hr).value='EVIDEN';
-  ws.getCell('C'+(hr+1)).value='LIKE';ws.getCell('D'+(hr+1)).value='COMMENT';ws.getCell('E'+(hr+1)).value='SHARE';
-  for(let c=1;c<=5;c++){[hr,hr+1].forEach(rw=>{const cell=ws.getCell(rw,c);cell.font={bold:false,name:'Times New Roman',size:10};cell.alignment=center;cell.border=border;});}
-  // data
+
   const dimCache={};
   const dimsOf=u=>dimCache[u]||(dimCache[u]=new Promise(res=>{const im=new Image();im.onload=()=>res({w:im.naturalWidth||120,h:im.naturalHeight||150});im.onerror=()=>res({w:120,h:150});im.src=u;}));
-  const CELLW=166,MAXH=400,COLPX=166; // px box per eviden cell (col width 23 ≈ 166px)
-  let dr=hr+2;
-  for(const g of grouped()){
-    const start=dr;
-    for(const r of g.items){
-      const tCell=ws.getCell('B'+dr);tCell.value=judul(r);tCell.alignment={vertical:'middle',wrapText:true};tCell.font={name:'Times New Roman',size:10};
-      ['A','B','C','D','E'].forEach(c=>ws.getCell(c+dr).border=border);
-      ws.getCell('A'+dr).alignment=center;ws.getCell('A'+dr).font={name:'Times New Roman',size:10};
-      let maxImgH=58;
-      for(const [type,col] of [['like',2],['comment',3],['share',4]]){
-        if(r[type]){
-          try{
-            const d=await dimsOf(r[type]);
-            const ratio=Math.min(CELLW/d.w,MAXH/d.h);
-            const w2=Math.round(d.w*ratio),h2=Math.round(d.h*ratio);
-            const ext=r[type].includes('image/png')?'png':'jpeg';
-            const imgId=wb.addImage({base64:r[type].split(',')[1],extension:ext});
-            const offX = (COLPX - w2) / 2; // px
-            ws.addImage(imgId,{tl:{col:col+(offX/COLPX),row:dr-1+0.05},ext:{width:w2,height:h2},editAs:'oneCell'});
-            if(h2>maxImgH)maxImgH=h2;
-          }catch(e){}
+  const CELLW=166,MAXH=400,COLPX=166;
+
+  let dr = 1;
+  const itemsPerPage = 3;
+  for (let i = 0; i < state.rows.length; i += itemsPerPage) {
+    const pageRows = state.rows.slice(i, i + itemsPerPage);
+
+    // title (only on first "page" block or every block? PDF only has it on first page.
+    // But user says "make the excel formatted like the downloaded pdf", so let's match PDF.
+    if (i === 0) {
+      ws.mergeCells(`A${dr}:E${dr}`);ws.getCell(`A${dr}`).value='LAPORAN PENDERASAN INFORMASI DAN PEMBANGUNAN PERTANIAN';
+      ws.mergeCells(`A${dr+1}:E${dr+1}`);ws.getCell(`A${dr+1}`).value='PENYULUH PERTANIAN TAHUN 2026';
+      ws.getRow(dr).height=20;ws.getRow(dr+1).height=18;
+      [`A${dr}`,`A${dr+1}`].forEach(c=>{const cell=ws.getCell(c);cell.font={bold:true,size:c.includes('A'+dr)?12:11,name:'Times New Roman'};cell.alignment={horizontal:'center',vertical:'middle'};});
+      dr += 3;
+      const idRows=[['BULAN',id.bulan],['NAMA PENYULUH',id.nama],['NIP',id.nip],['WILAYAH BINAAN',id.wilbin],['INSTANSI/BPP',id.instansi],['KECAMATAN',id.kecamatan],['KABUPATEN/PROVINSI',id.kabprov]];
+      idRows.forEach(([k,v])=>{ws.getCell('A'+dr).value=k;ws.getCell('B'+dr).value=': '+(v||'');ws.getCell('A'+dr).font={name:'Times New Roman',size:10};ws.getCell('B'+dr).font={name:'Times New Roman',size:10,bold:false};dr++;});
+      dr++; // gap
+    }
+
+    // header
+    const hr=dr;
+    ws.mergeCells(`A${hr}:A${hr+1}`);ws.getCell('A'+hr).value='TANGGAL';
+    ws.mergeCells(`B${hr}:B${hr+1}`);ws.getCell('B'+hr).value='JUDUL KONTEN';
+    ws.mergeCells(`C${hr}:E${hr}`);ws.getCell('C'+hr).value='EVIDEN';
+    ws.getCell('C'+(hr+1)).value='LIKE';ws.getCell('D'+(hr+1)).value='COMMENT';ws.getCell('E'+(hr+1)).value='SHARE';
+    for(let c=1;c<=5;c++){[hr,hr+1].forEach(rw=>{const cell=ws.getCell(rw,c);cell.font={bold:false,name:'Times New Roman',size:10};cell.alignment=center;cell.border=border;});}
+    dr = hr + 2;
+
+    // data
+    // We need grouped rows for the current pageRows
+    const gPage = []; let cur = null;
+    pageRows.forEach(r => {
+      const d = r.date || '';
+      if (!cur || cur.date !== d) { cur = { date: d, items: [] }; gPage.push(cur); }
+      cur.items.push(r);
+    });
+
+    for(const g of gPage){
+      const start=dr;
+      for(const r of g.items){
+        const tCell=ws.getCell('B'+dr);tCell.value=judul(r);tCell.alignment={vertical:'middle',wrapText:true};tCell.font={name:'Times New Roman',size:10};
+        ['A','B','C','D','E'].forEach(c=>ws.getCell(c+dr).border=border);
+        ws.getCell('A'+dr).alignment=center;ws.getCell('A'+dr).font={name:'Times New Roman',size:10};
+        let maxImgH=58;
+        for(const [type,col] of [['like',2],['comment',3],['share',4]]){
+          if(r[type]){
+            try{
+              const d=await dimsOf(r[type]);
+              const ratio=Math.min(CELLW/d.w,MAXH/d.h);
+              const w2=Math.round(d.w*ratio),h2=Math.round(d.h*ratio);
+              const ext=r[type].includes('image/png')?'png':'jpeg';
+              const imgId=wb.addImage({base64:r[type].split(',')[1],extension:ext});
+              const offX = (COLPX - w2) / 2; // px
+              ws.addImage(imgId,{tl:{col:col+(offX/COLPX),row:dr-1+0.05},ext:{width:w2,height:h2},editAs:'oneCell'});
+              if(h2>maxImgH)maxImgH=h2;
+            }catch(e){}
+          }
         }
+        ws.getRow(dr).height=Math.round(maxImgH*0.76)+15;
+        dr++;
       }
-      ws.getRow(dr).height=Math.round(maxImgH*0.76)+15; // px→pt, fit screenshot height with padding
+      if(g.items.length>1){ws.mergeCells(`A${start}:A${dr-1}`);}
+      ws.getCell('A'+start).value=g.date||'';ws.getCell('A'+start).alignment=center;
+    }
+
+    if (i + itemsPerPage < state.rows.length) {
+      ws.getRow(dr).addPageBreak();
       dr++;
     }
-    if(g.items.length>1){ws.mergeCells(`A${start}:A${dr-1}`);}
-    ws.getCell('A'+start).value=g.date||'';ws.getCell('A'+start).alignment=center;
   }
   const buf=await wb.xlsx.writeBuffer();
   const fname=`EVIDEN LCS ${(id.bulan||'').replace(/^BULAN\s+/i,'')}`.trim()+'.xlsx';
@@ -699,13 +705,13 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;',
 function toast(msg,err){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');clearTimeout(t._t);t._t=setTimeout(()=>t.className='toast',2600);}
 Object.keys(DEFAULTS).forEach(idn=>document.getElementById(idn).addEventListener('input',save));
 document.getElementById('wilbin').addEventListener('blur',function(){
-  let v=this.value.trim().toUpperCase();
-  if(v && !v.startsWith('DESA ')) v='DESA '+v;
+  let v=this.value.trim();
+  if(v && !v.toUpperCase().startsWith('DESA ')) v='Desa '+v;
   this.value=v;save();
 });
 document.getElementById('instansi').addEventListener('blur',function(){
-  let v=this.value.trim().toUpperCase();
-  if(v && !v.startsWith('BPP ')) v='BPP '+v;
+  let v=this.value.trim();
+  if(v && !v.toUpperCase().startsWith('BPP ')) v='BPP '+v;
   this.value=v;save();
 });
 window.addRow=addRow;window.delRow=delRow;window.clearRows=clearRows;window.field=field;
