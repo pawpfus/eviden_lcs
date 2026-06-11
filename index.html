@@ -591,7 +591,8 @@ async function paginate(){
     return `<div class="sheet">${head}<table class="rpt">${COLG}${THEAD}<tbody>${tbodyHTML(rows)}</tbody></table><div class="foot">hal ${pi + 1} dari ${N}</div></div>`;
   }).join('');
 }
-function fileBase(){return ('EVIDEN LCS '+(state.id.bulan||'').replace(/^BULAN\s+/i,'')).trim();}
+function todayId(){const d=new Date();const m=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];return d.getDate()+' '+m[d.getMonth()]+' '+d.getFullYear();}
+function fileBase(){return 'Eviden LCS '+todayId();}
 // Download: builds a real .pdf file and downloads it directly
 async function downloadPDF(){
   if(!state.rows.length){toast('Belum ada konten untuk diunduh',true);return;}
@@ -710,7 +711,7 @@ async function exportExcel(){
     }
   }
   const buf=await wb.xlsx.writeBuffer();
-  const fname=`EVIDEN LCS ${(id.bulan||'').replace(/^BULAN\s+/i,'')}`.trim()+'.xlsx';
+  const fname=fileBase()+'.xlsx';
   downloadBlob(new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),fname);
   toast('File Excel diunduh');
 }
