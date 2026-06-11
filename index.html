@@ -44,16 +44,16 @@
   /* ---------- Top bar ---------- */
   .topbar{
     position:sticky;top:0;z-index:50;
-    background: var(--moss);
-    color:#eafff5; box-shadow:0 2px 8px rgba(0,0,0,0.15);
-    border-bottom:1px solid rgba(255,255,255,.06);
+    background: var(--moss-2);
+    color:#eafff5; box-shadow:0 2px 8px rgba(0,0,0,0.2);
+    border-bottom:1px solid rgba(255,255,255,.04);
   }
   .topbar-inner{max-width:1160px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:16px}
   .brand{display:flex;align-items:center;gap:12px;min-width:0}
   .logo{
     width:40px;height:40px;border-radius:10px;flex:0 0 auto;
-    background: #fff;
-    display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,0.15);
+    background: transparent;
+    display:grid;place-items:center;
     overflow: hidden;
   }
   .logo svg{width:24px;height:24px}
@@ -509,7 +509,9 @@ function normPlat(s){
 /* ---------- judul string ---------- */
 function judul(r){
   let head=r.account?`(${r.platform} : ${r.account})`:`(${r.platform})`;
-  return `${r.no?r.no+' ':''}${head} ${r.title||''}`.trim();
+  let t = (r.title || '').trim();
+  if (t) t = t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
+  return `${r.no?r.no+' ':''}${head} ${t}`.trim();
 }
 
 /* ---------- group by date for merged cells ---------- */
