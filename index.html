@@ -44,9 +44,9 @@
   /* ---------- Top bar ---------- */
   .topbar{
     position:sticky;top:0;z-index:50;
-    background: var(--moss-2);
-    color:#eafff5; box-shadow:0 2px 8px rgba(0,0,0,0.2);
-    border-bottom:1px solid rgba(255,255,255,.04);
+    background: linear-gradient(120deg,#161616 0%,#0a0a0a 60%,#000 100%);
+    color:#eef2f5; box-shadow:0 4px 18px rgba(0,0,0,0.45);
+    border-bottom:1px solid rgba(255,255,255,.07);
   }
   .topbar-inner{max-width:1160px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:16px}
   .brand{display:flex;align-items:center;gap:12px;min-width:0}
@@ -73,6 +73,13 @@
   .btn svg{width:16px;height:16px}
   .btn-ghost{background:rgba(255,255,255,.08);color:#eafff5;border:1px solid rgba(255,255,255,.14)}
   .btn-ghost:hover{background:rgba(255,255,255,.16)}
+  .btn-toggle{appearance:none;cursor:pointer;width:34px;height:34px;flex:0 0 auto;padding:0;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#eef2f5;
+    transition:background .15s,transform .12s,box-shadow .15s}
+  .btn-toggle:hover{background:rgba(255,255,255,.14);box-shadow:0 0 0 4px rgba(255,255,255,.05)}
+  .btn-toggle:active{transform:scale(.92)}
+  .btn-toggle svg{width:16px;height:16px}
   .btn-gold{background: var(--gold);color:#fff;box-shadow:0 2px 8px rgba(196,124,18,0.3)}
   .btn-gold:hover{filter:brightness(1.08)}
   .btn-white{background:#fff;color:var(--moss);box-shadow:0 2px 8px rgba(0,0,0,0.12)}
@@ -205,7 +212,7 @@
     </div>
     <div class="spacer"></div>
     <div class="save-pill"><span class="save-dot" id="saveDot"></span><span id="saveTxt">Tersimpan otomatis</span></div>
-    <button class="btn btn-ghost" onclick="toggleTheme()" title="Ganti Tema">
+    <button class="btn-toggle" onclick="toggleTheme()" title="Ganti Tema">
       <svg id="sun" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       <svg id="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
     </button>
