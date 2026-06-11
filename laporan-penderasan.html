@@ -528,12 +528,12 @@ body{font-family:'Times New Roman', Times, serif;color:#000}
 .banner .t1{font-weight:700;font-size:17px;letter-spacing:.3px;line-height:1.25}
 .banner .t2{font-weight:700;font-size:15px;margin-top:3px}
 .idblock{margin:0 0 12px}
-.p-id{display:flex;font-size:13px;line-height:1.5}
+.p-id{display:flex;font-size:13px;line-height:1.5;font-weight:400}
 .p-id .k{width:175px;flex:0 0 175px}
 .p-id .c{width:14px;flex:0 0 14px}
 table.rpt{width:710px;border-collapse:collapse;font-size:12px;table-layout:fixed}
-table.rpt th,table.rpt td{border:1px solid #000;padding:5px 6px;vertical-align:middle;word-wrap:break-word;overflow-wrap:break-word}
-table.rpt th{text-align:center;font-weight:400;white-space:nowrap}
+table.rpt th,table.rpt td{border:0.5px solid #000;padding:5px 6px;vertical-align:middle;word-wrap:break-word;overflow-wrap:break-word}
+table.rpt th{text-align:center;font-weight:400 !important;white-space:nowrap}
 .p-date{text-align:center;font-weight:400}
 .p-judul{vertical-align:top;text-align:left}
 .p-ev{text-align:center;padding:4px}
@@ -644,7 +644,7 @@ async function exportExcel(){
       [`A${dr}`,`A${dr+1}`].forEach(c=>{const cell=ws.getCell(c);cell.font={bold:true,size:c.includes('A'+dr)?12:11,name:'Times New Roman'};cell.alignment={horizontal:'center',vertical:'middle'};});
       dr += 3;
       const idRows=[['BULAN',id.bulan],['NAMA PENYULUH',id.nama],['NIP',id.nip],['WILAYAH BINAAN',id.wilbin],['INSTANSI/BPP',id.instansi],['KECAMATAN',id.kecamatan],['KABUPATEN/PROVINSI',id.kabprov]];
-      idRows.forEach(([k,v])=>{ws.getCell('A'+dr).value=k;ws.getCell('B'+dr).value=': '+(v||'').toUpperCase();ws.getCell('A'+dr).font={name:'Times New Roman',size:10};ws.getCell('B'+dr).font={name:'Times New Roman',size:10,bold:false};dr++;});
+      idRows.forEach(([k,v])=>{ws.getCell('A'+dr).value=k;ws.getCell('B'+dr).value=': '+(v||'').toUpperCase();ws.getCell('A'+dr).font={name:'Times New Roman',size:10,bold:false};ws.getCell('B'+dr).font={name:'Times New Roman',size:10,bold:false};dr++;});
       dr++; // gap
     }
 
