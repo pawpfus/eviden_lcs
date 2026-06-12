@@ -187,14 +187,18 @@
     .card-head{padding:13px 14px}
     .card-body{padding:15px}
     .step{display:none}
-    .topbar-inner{padding:10px 12px;gap:6px 8px;flex-wrap:wrap;justify-content:space-between}
-    .brand{flex:1 1 100%;margin-bottom:2px}
-    .brand h1{font-size:14px;white-space:normal;line-height:1.15}
+    .topbar-inner{padding:10px 12px;gap:6px;flex-wrap:nowrap;justify-content:space-between}
+    .brand{flex:1;min-width:0;margin-bottom:0;gap:8px}
+    .brand h1{font-size:14px;white-space:nowrap;line-height:1.1}
+    .brand h1 br{display:none}
     .brand p{display:none}
     .spacer{display:none}
-    .logo{width:34px;height:34px;border-radius:9px}
-    .logo svg{width:20px;height:20px}
-    .btn{padding:8px 10px;font-size:12px;flex:1 1 auto;justify-content:center}
+    .logo{width:32px;height:32px;border-radius:8px}
+    .logo svg{width:18px;height:18px}
+    .btn{padding:6px 8px;font-size:11px;flex:0 0 auto;justify-content:center;gap:4px}
+    .btn svg{width:14px;height:14px}
+    .btn-toggle{width:30px;height:30px}
+    .btn-toggle svg{width:14px;height:14px}
     .entry-fields{grid-template-columns:1fr 1fr}
     .eviden{padding:0 14px 14px}
     /* 16px inputs prevent iOS auto-zoom on focus */
@@ -210,8 +214,6 @@
     .ev-slot{min-height:96px}
     .ev-tag{font-size:8.5px;padding:2px 5px}
     .del-btn{margin:10px 8px 0 0}
-    .btn{padding:8px 10px}
-    .btn svg{width:15px;height:15px}
   }
   @media print{.topbar,.wrap,.toast{display:none!important}}
 </style>
@@ -234,8 +236,8 @@
       <svg id="sun" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       <svg id="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
     </button>
-    <button class="btn btn-ghost" onclick="resetAll()" title="Mulai dari awal">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Reset
+    <button class="btn-toggle" onclick="resetAll()" title="Mulai dari awal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
     </button>
     <button class="btn btn-gold" onclick="exportExcel()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13l6 5M15 13l-6 5"/></svg>Excel
