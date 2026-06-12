@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eviden LCS — Pintasan Ambil Konten</title>
+<style>
+  *{box-sizing:border-box}
+  body{font-family:'Instrument Sans',-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;
+    background:#0d110d;color:#e8ede7;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:680px;margin:0 auto;padding:40px 22px 80px}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:#8a9489;font-size:14px;margin:0 0 28px}
+  .card{background:#1a221a;border:1px solid #222a22;border-radius:14px;padding:22px;margin-bottom:20px}
+  .grab{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(180deg,#22c07d,#15a36a);
+    color:#04210f;font-weight:800;font-size:15px;text-decoration:none;padding:13px 22px;border-radius:12px;
+    box-shadow:0 6px 18px rgba(21,163,106,.35);cursor:grab;user-select:none}
+  .grab:active{cursor:grabbing}
+  ol{margin:6px 0 0;padding-left:20px}
+  li{margin:7px 0}
+  code{background:#0e1a14;border:1px solid #222a22;border-radius:6px;padding:1px 6px;font-size:12.5px}
+  .step{font-weight:700;color:#22c07d}
+  .note{font-size:13px;color:#8a9489;border-left:3px solid #15a36a;padding:4px 0 4px 14px;margin-top:8px}
+  .center{text-align:center;margin:10px 0 4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🔖 Pintasan “Ambil Konten LCS”</h1>
+  <p class="sub">Otomatis menyalin daftar konten dari <b>dev.epusluh.id/lcs/list</b> langsung ke aplikasi Eviden LCS.</p>
+
+  <div class="card">
+    <div class="step">LANGKAH 1 — Pasang pintasan (sekali saja)</div>
+    <p>Tampilkan bilah bookmark (<code>Ctrl</code>+<code>Shift</code>+<code>B</code>), lalu <b>seret tombol di bawah</b> ke bilah bookmark Anda:</p>
+    <div class="center">
+      <a class="grab" href="javascript:(function(){var M=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];var L=document.body.innerText.split('\n').map(function(s){return s.trim();}).filter(Boolean);var dR=/(?:Instagram|TikTok|Tiktok|Youtube|YouTube|YT\s*Short|Facebook|Twitter|X)\s*:\s*(\d{1,2})-(\d{1,2})-(\d{4})/i,bR=/^(\d{1,2})-(\d{1,2})-(\d{4})$/,cR=/^(\d+)\s*\(([^)]+)\)\s*(.*)$/;var cur='',o=[];for(var i=0;i<L.length;i++){var ln=L[i];if(/^Instruksi/i.test(ln))continue;var d=ln.match(dR)||ln.match(bR);if(d){cur=parseInt(d[1],10)+' '+M[parseInt(d[2],10)-1]+' '+d[3];continue;}var c=ln.match(cR);if(c){o.push(cur);o.push(c[1]+' ('+c[2].replace(/\s*:\s*/,' : ').trim()+') '+c[3].trim());}}if(!o.length){alert('Tidak ada konten LCS terbaca di halaman ini.');return;}var t=o.join('\n');var e=encodeURIComponent(btoa(unescape(encodeURIComponent(t))));window.open('https://pawpfus.github.io/eviden_lcs/#import='+e,'_blank');})();">📥 Ambil Konten LCS</a>
+    </div>
+    <p class="note">Tidak bisa diseret? Klik kanan tombol → <i>Bookmark this link / Tambahkan ke bookmark</i>.</p>
+  </div>
+
+  <div class="card">
+    <div class="step">LANGKAH 2 — Pakai</div>
+    <ol>
+      <li>Buka <code>dev.epusluh.id/lcs/list</code> dan pastikan sudah login.</li>
+      <li>Klik bookmark <b>“Ambil Konten LCS”</b>.</li>
+      <li>Aplikasi <b>Eviden LCS</b> terbuka di tab baru dengan konten halaman itu <b>sudah otomatis terisi</b> sebagai baris.</li>
+      <li>Tinggal lengkapi eviden (Like/Comment/Share) dan ekspor PDF/Excel.</li>
+    </ol>
+    <p class="note">Jika ada beberapa halaman (1, 2, 3 …), klik pintasannya di tiap halaman — barisnya akan ditambahkan, bukan menimpa.</p>
+  </div>
+
+  <div class="card">
+    <div class="step">Tidak otomatis terisi?</div>
+    <p>Buka <a href="https://pawpfus.github.io/eviden_lcs/" style="color:#22c07d">aplikasinya</a> sekali lalu refresh (agar versi terbaru termuat), kemudian ulangi Langkah 2.</p>
+  </div>
+</div>
+</body>
+</html>
