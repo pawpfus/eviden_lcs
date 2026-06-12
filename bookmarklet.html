@@ -3,55 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eviden LCS — Pintasan Ambil Konten</title>
+<title>Eviden LCS — Impor dari E-Pusluh</title>
 <style>
   *{box-sizing:border-box}
   body{font-family:'Instrument Sans',-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;
     background:#0d110d;color:#e8ede7;line-height:1.6;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:680px;margin:0 auto;padding:40px 22px 80px}
+  .wrap{max-width:680px;margin:0 auto;padding:36px 20px 80px}
   h1{font-size:22px;margin:0 0 4px}
-  .sub{color:#8a9489;font-size:14px;margin:0 0 28px}
-  .card{background:#1a221a;border:1px solid #222a22;border-radius:14px;padding:22px;margin-bottom:20px}
+  .sub{color:#8a9489;font-size:14px;margin:0 0 26px}
+  .card{background:#1a221a;border:1px solid #222a22;border-radius:14px;padding:20px;margin-bottom:18px}
+  .tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
+    color:#04210f;background:#22c07d;padding:3px 10px;border-radius:999px;margin-bottom:12px}
+  .tag.alt{background:#2b3550;color:#cfe0ff}
+  h2{font-size:16px;margin:0 0 10px}
+  ol{margin:6px 0 0;padding-left:20px}
+  li{margin:8px 0}
+  code{background:#0e1a14;border:1px solid #222a22;border-radius:6px;padding:1px 6px;font-size:12.5px}
+  b{color:#fff}
   .grab{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(180deg,#22c07d,#15a36a);
-    color:#04210f;font-weight:800;font-size:15px;text-decoration:none;padding:13px 22px;border-radius:12px;
+    color:#04210f;font-weight:800;font-size:15px;text-decoration:none;padding:12px 20px;border-radius:12px;
     box-shadow:0 6px 18px rgba(21,163,106,.35);cursor:grab;user-select:none}
   .grab:active{cursor:grabbing}
-  ol{margin:6px 0 0;padding-left:20px}
-  li{margin:7px 0}
-  code{background:#0e1a14;border:1px solid #222a22;border-radius:6px;padding:1px 6px;font-size:12.5px}
-  .step{font-weight:700;color:#22c07d}
-  .note{font-size:13px;color:#8a9489;border-left:3px solid #15a36a;padding:4px 0 4px 14px;margin-top:8px}
-  .center{text-align:center;margin:10px 0 4px}
+  .center{text-align:center;margin:12px 0 4px}
+  .note{font-size:13px;color:#8a9489;border-left:3px solid #15a36a;padding:3px 0 3px 13px;margin-top:10px}
+  a.link{color:#22c07d}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>🔖 Pintasan “Ambil Konten LCS”</h1>
-  <p class="sub">Otomatis menyalin daftar konten dari <b>dev.epusluh.id/lcs/list</b> langsung ke aplikasi Eviden LCS.</p>
+  <h1>📥 Impor Konten dari E-Pusluh</h1>
+  <p class="sub">Memasukkan daftar konten dari <b style="color:#cfe0ff">dev.epusluh.id/lcs/list</b> ke aplikasi Eviden LCS.</p>
 
   <div class="card">
-    <div class="step">LANGKAH 1 — Pasang pintasan (sekali saja)</div>
-    <p>Tampilkan bilah bookmark (<code>Ctrl</code>+<code>Shift</code>+<code>B</code>), lalu <b>seret tombol di bawah</b> ke bilah bookmark Anda:</p>
+    <span class="tag">📱 Di HP — paling mudah</span>
+    <h2>Salin–Tempel</h2>
+    <ol>
+      <li>Buka <code>dev.epusluh.id/lcs/list</code> di browser HP (pastikan sudah <b>login</b>).</li>
+      <li><b>Blokir & salin</b> teks daftar kontennya. Tidak perlu rapi — boleh <b>pilih semua</b> (termasuk tombol & menu); aplikasi otomatis menyaringnya.</li>
+      <li>Buka aplikasi <b><a class="link" href="https://pawpfus.github.io/eviden_lcs/">Eviden LCS</a></b> → kartu <b>Impor Judul Konten</b>.</li>
+      <li>Ketuk <b>Tempel dari Clipboard</b>, lalu <b>Urai &amp; Tambahkan</b>.</li>
+    </ol>
+    <p class="note">Aplikasi otomatis: mengabaikan baris <i>Instruksi</i>, tombol, dan menu; serta mengubah tanggal <code>11-06-2026</code> → <code>11 Juni 2026</code>. Kalau tombol clipboard diblokir browser, ketuk kotak teksnya lalu <b>Paste</b> manual.</p>
+    <p class="note">Tip: pasang aplikasinya ke layar utama — di Chrome/Safari pilih menu ⋮ → <b>Add to Home screen / Tambahkan ke Layar Utama</b>. Bisa dibuka seperti app biasa & jalan offline.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag alt">💻 Di Komputer — satu klik</span>
+    <h2>Pintasan (bookmarklet)</h2>
+    <p>Tampilkan bilah bookmark (<code>Ctrl</code>+<code>Shift</code>+<code>B</code>), lalu <b>seret tombol ini</b> ke bilah bookmark:</p>
     <div class="center">
       <a class="grab" href="javascript:(function(){var M=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];var L=document.body.innerText.split('\n').map(function(s){return s.trim();}).filter(Boolean);var dR=/(?:Instagram|TikTok|Tiktok|Youtube|YouTube|YT\s*Short|Facebook|Twitter|X)\s*:\s*(\d{1,2})-(\d{1,2})-(\d{4})/i,bR=/^(\d{1,2})-(\d{1,2})-(\d{4})$/,cR=/^(\d+)\s*\(([^)]+)\)\s*(.*)$/;var cur='',o=[];for(var i=0;i<L.length;i++){var ln=L[i];if(/^Instruksi/i.test(ln))continue;var d=ln.match(dR)||ln.match(bR);if(d){cur=parseInt(d[1],10)+' '+M[parseInt(d[2],10)-1]+' '+d[3];continue;}var c=ln.match(cR);if(c){o.push(cur);o.push(c[1]+' ('+c[2].replace(/\s*:\s*/,' : ').trim()+') '+c[3].trim());}}if(!o.length){alert('Tidak ada konten LCS terbaca di halaman ini.');return;}var t=o.join('\n');var e=encodeURIComponent(btoa(unescape(encodeURIComponent(t))));window.open('https://pawpfus.github.io/eviden_lcs/#import='+e,'_blank');})();">📥 Ambil Konten LCS</a>
     </div>
-    <p class="note">Tidak bisa diseret? Klik kanan tombol → <i>Bookmark this link / Tambahkan ke bookmark</i>.</p>
+    <p class="note">Setelah terpasang: buka <code>dev.epusluh.id/lcs/list</code> → klik bookmark itu → Eviden LCS terbuka dengan konten sudah terisi. Tidak bisa diseret? Klik kanan → <i>Bookmark this link</i>.</p>
   </div>
 
   <div class="card">
-    <div class="step">LANGKAH 2 — Pakai</div>
+    <span class="tag alt">Catatan</span>
     <ol>
-      <li>Buka <code>dev.epusluh.id/lcs/list</code> dan pastikan sudah login.</li>
-      <li>Klik bookmark <b>“Ambil Konten LCS”</b>.</li>
-      <li>Aplikasi <b>Eviden LCS</b> terbuka di tab baru dengan konten halaman itu <b>sudah otomatis terisi</b> sebagai baris.</li>
-      <li>Tinggal lengkapi eviden (Like/Comment/Share) dan ekspor PDF/Excel.</li>
+      <li>Jika daftarnya banyak halaman (1, 2, 3 …), ulangi di tiap halaman — baris <b>ditambahkan</b>, tidak menimpa.</li>
+      <li>Belum jalan setelah update? Buka <a class="link" href="https://pawpfus.github.io/eviden_lcs/">aplikasinya</a> sekali lalu refresh agar versi terbaru termuat.</li>
     </ol>
-    <p class="note">Jika ada beberapa halaman (1, 2, 3 …), klik pintasannya di tiap halaman — barisnya akan ditambahkan, bukan menimpa.</p>
-  </div>
-
-  <div class="card">
-    <div class="step">Tidak otomatis terisi?</div>
-    <p>Buka <a href="https://pawpfus.github.io/eviden_lcs/" style="color:#22c07d">aplikasinya</a> sekali lalu refresh (agar versi terbaru termuat), kemudian ulangi Langkah 2.</p>
   </div>
 </div>
 </body>
