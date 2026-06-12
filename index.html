@@ -66,7 +66,7 @@
     overflow: hidden;
   }
   .logo svg{width:24px;height:24px}
-  .brand h1{font-size:17px;margin:0;font-weight:800;letter-spacing:-0.1px;line-height:1;white-space:nowrap}
+  .brand h1{font-size:15px;margin:0;font-weight:800;letter-spacing:.3px;line-height:1.04;white-space:nowrap}
   .brand p{margin:1px 0 0;font-size:11.5px;color:var(--tb-sub);font-weight:500}
   .spacer{flex:1}
   .save-pill{font-size:11.5px;color:var(--tb-sub);display:flex;align-items:center;gap:6px;white-space:nowrap}
@@ -189,7 +189,8 @@
     .step{display:none}
     .topbar-inner{padding:10px 12px;gap:6px;flex-wrap:nowrap;justify-content:space-between}
     .brand{flex:1;min-width:0;margin-bottom:0;gap:8px}
-    .brand h1{font-size:15px;white-space:nowrap;line-height:1}
+    .brand h1{font-size:14px;white-space:nowrap;line-height:1.1}
+    .brand h1 br{display:none}
     .brand p{display:none}
     .spacer{display:none}
     .logo{width:32px;height:32px;border-radius:8px}
@@ -225,7 +226,9 @@
       <div class="logo">
         <img src="icon.png" alt="Logo" style="width:100%;height:100%;border-radius:inherit;display:block">
       </div>
-      <h1>Eviden LCS</h1>
+      <div>
+        <h1>Eviden<br>LCS</h1>
+      </div>
     </div>
     <div class="spacer"></div>
     <div class="save-pill"><span class="save-dot" id="saveDot"></span><span id="saveTxt">Tersimpan otomatis</span></div>
