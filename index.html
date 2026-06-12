@@ -773,6 +773,21 @@ updateThemeIcons();
 window.downloadPDF=downloadPDF;window.exportExcel=exportExcel;window.resetAll=resetAll;window.toggleTheme=toggleTheme;
 load();
 
+// Auto-import content handed over from the LCS webapp bookmarklet via URL hash
+(function(){
+  try{
+    var m=location.hash.match(/(?:^#|&)import=([^&]+)/);
+    if(!m)return;
+    var text=decodeURIComponent(escape(atob(decodeURIComponent(m[1]))));
+    history.replaceState(null,'',location.pathname+location.search);
+    var box=document.getElementById('importBox');
+    if(box && text.trim()){
+      box.value=(box.value.trim()?box.value.replace(/\s+$/,'')+'\n':'')+text;
+      doImport();
+    }
+  }catch(e){}
+})();
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
