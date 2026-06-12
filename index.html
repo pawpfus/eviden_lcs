@@ -260,6 +260,7 @@
         <div class="field">
           <label>Bulan</label>
           <select id="bulan">
+            <option value="" disabled selected>PILIH BULAN</option>
             <option value="JANUARI">JANUARI</option>
             <option value="FEBRUARI">FEBRUARI</option>
             <option value="MARET">MARET</option>
@@ -337,13 +338,13 @@
 
 <script>
 const DEFAULTS={
-  bulan:'MEI',
-  nama:'MUHAMMAD FACHRURI S.TP',
-  nip:'199407022020121002',
-  wilbin:'DESA OTTING',
-  instansi:'BPP PITU RIAWA',
-  kecamatan:'PITU RIAWA',
-  kabprov:'SIDENRENG RAPPANG'
+  bulan:'',
+  nama:'',
+  nip:'',
+  wilbin:'',
+  instansi:'',
+  kecamatan:'',
+  kabprov:''
 };
 const PLATFORMS=['Instagram','Tiktok','Youtube','YT Short','Facebook','X','Website','Lainnya'];
 const KEY='laporan_penderasan_v1';
