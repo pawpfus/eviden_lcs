@@ -115,7 +115,6 @@
   }
   input:focus,textarea:focus,select:focus{outline:none;border-color:var(--moss);box-shadow:0 0 0 3px rgba(1,68,33,.1)}
   textarea{resize:vertical;min-height:120px;line-height:1.55;font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
-  .hint{font-size:11.5px;color:var(--muted)}
   /* ---------- Import ---------- */
   .auto-cta{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;
     background:linear-gradient(135deg,rgba(34,192,125,.14),rgba(21,163,106,.05));
@@ -303,7 +302,6 @@
       <div class="field">
         <label>Tempel daftar konten</label>
         <textarea id="importBox" placeholder="Contoh (tempel apa adanya dari webapp):&#10;11 Februari 2026&#10;170 (Instagram : kementerianpertanian) NTB Jadi Kawasan Sentra Jagung Nasional&#10;171 (Tiktok : bppsdmp) Tanam Serentak, Tanam Harapan&#10;12 Februari 2026&#10;172 (Youtube : tvOneNews) Harga Pangan Turun"></textarea>
-        <span class="hint">Format dikenali: <b>nomor</b> (Platform : akun) <b>judul</b>. Baris tanggal seperti "11 Februari 2026" otomatis diterapkan ke konten di bawahnya.</span>
       </div>
       <button class="btn btn-emerald" style="justify-content:center;width:100%;margin-top:14px" onclick="doImport()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>Urai &amp; Tambahkan
