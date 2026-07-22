@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eviden-lcs-v11';
+const CACHE_NAME = 'eviden-lcs-v12';
 const ASSETS = [
   './',
   './index.html',
