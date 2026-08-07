@@ -4,8 +4,8 @@
   "description": "Alat bantu pembuatan laporan penderasan informasi pembangunan pertanian.",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#f4efe7",
-  "theme_color": "#f4efe7",
+  "background_color": "#0e1116",
+  "theme_color": "#0e1116",
   "icons": [
     {
       "src": "icon.png",
