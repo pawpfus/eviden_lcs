@@ -106,7 +106,7 @@
   }
   input::placeholder,textarea::placeholder{color:var(--ink-4)}
   input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent-line);box-shadow:0 0 0 3px var(--accent-soft);background:var(--card)}
-  select{cursor:pointer}
+  select{cursor:pointer;-webkit-appearance:menulist;appearance:auto}
   textarea{resize:vertical;min-height:120px;line-height:1.55;font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
   /* ---------- Import ---------- */
   .auto-cta{display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit;
@@ -129,6 +129,8 @@
   .toolbar .count{margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;color:var(--ink-3);font-weight:600;
     background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:5px 9px;letter-spacing:.02em}
   .btn-sm{padding:7px 12px;font-size:12px;border-radius:6px}
+  .btn-icon{width:36px;height:36px;padding:0;border-radius:8px;justify-content:center}
+  .btn-icon svg{width:18px;height:18px}
   .btn-emerald{background:var(--accent);color:var(--accent-ink)}
   .btn-emerald:hover{filter:brightness(1.06)}
   .btn-line{background:transparent;border:1px solid var(--line);color:var(--ink-2)}
@@ -283,18 +285,11 @@
   <div class="card">
     <div class="card-head">
       <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></div>
-      <div><h2>Impor Judul Konten</h2></div>
+      <div><h2>Impor Konten</h2></div>
       <span class="step">LANGKAH 2</span>
     </div>
     <div class="card-body">
-      <a class="auto-cta" href="bookmarklet.html" target="_blank" rel="noopener">
-        <span class="auto-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
-        <span class="auto-txt"><strong>Impor otomatis dari E-Pusluh</strong><span>Pasang pintasan sekali — lalu cukup satu klik dari dev.epusluh.id, konten langsung masuk ke sini.</span></span>
-        <svg class="auto-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-      <div class="or-sep">atau tempel manual</div>
       <div class="field">
-        <label>Tempel daftar konten</label>
         <textarea id="importBox" placeholder="Contoh (tempel apa adanya dari webapp):&#10;11 Februari 2026&#10;170 (Instagram : kementerianpertanian) NTB Jadi Kawasan Sentra Jagung Nasional&#10;171 (Tiktok : bppsdmp) Tanam Serentak, Tanam Harapan&#10;12 Februari 2026&#10;172 (Youtube : tvOneNews) Harga Pangan Turun"></textarea>
       </div>
       <button class="btn btn-emerald" style="justify-content:center;width:100%;margin-top:14px" onclick="doImport()">
@@ -312,14 +307,13 @@
     </div>
     <div class="card-body">
       <div class="toolbar">
-        <button class="btn btn-emerald btn-sm" onclick="addRow()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Tambah Konten</button>
-        <button class="btn btn-line btn-sm" onclick="clearRows()">Kosongkan Daftar</button>
+        <button class="btn btn-emerald btn-icon" onclick="addRow()" title="Tambah konten" aria-label="Tambah konten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
         <span class="count" id="countTxt">0 konten</span>
       </div>
       <div class="rows" id="rows"></div>
       <div class="empty" id="emptyState">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>
-        <div>Belum ada konten. Tempel daftar di Langkah 2 atau klik <b>Tambah Konten</b>.</div>
+        <div>Belum ada konten. Tempel daftar di Langkah 2 atau klik <b>+</b>.</div>
       </div>
     </div>
   </div>
