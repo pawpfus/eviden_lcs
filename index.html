@@ -426,7 +426,7 @@ function pickImage(rid,type){pendingUpload={rid,type};document.getElementById('f
 function removeImage(rid,type){const r=state.rows.find(x=>x.rid===rid);if(r){r[type]=null;render();save();}}
 document.getElementById('fileInput').addEventListener('change',function(e){
   const f=e.target.files[0];if(!f||!pendingUpload)return;
-  resizeImage(f,2000,3000,0.95).then(dataUrl=>{
+  resizeImage(f,1080,1080,0.72).then(dataUrl=>{
     const r=state.rows.find(x=>x.rid===pendingUpload.rid);
     if(r){r[pendingUpload.type]=dataUrl;render();save();}
     pendingUpload=null;this.value='';
