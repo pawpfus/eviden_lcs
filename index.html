@@ -339,20 +339,54 @@ const KEY='laporan_penderasan_v1';
 let state={id:{},rows:[]};
 let pendingUpload=null; // {rowId, type}
 
+/* ---------- image store (IndexedDB — images kept out of localStorage) ---------- */
+const IMG_TYPES=['like','comment','share'];
+const IDB={db:null};
+function idbOpen(){return new Promise((res,rej)=>{const q=indexedDB.open('eviden_lcs',1);
+  q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains('images'))q.result.createObjectStore('images');};
+  q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});}
+async function idbReady(){if(!IDB.db)IDB.db=await idbOpen();return IDB.db;}
+function idbTx(mode){return idbReady().then(db=>db.transaction('images',mode).objectStore('images'));}
+async function idbPut(k,v){const s=await idbTx('readwrite');return new Promise((res,rej)=>{const rq=s.put(v,k);rq.onsuccess=()=>res();rq.onerror=()=>rej(rq.error);});}
+async function idbGet(k){const s=await idbTx('readonly');return new Promise((res,rej)=>{const rq=s.get(k);rq.onsuccess=()=>res(rq.result||null);rq.onerror=()=>rej(rq.error);});}
+async function idbDel(k){const s=await idbTx('readwrite');return new Promise((res,rej)=>{const rq=s.delete(k);rq.onsuccess=()=>res();rq.onerror=()=>rej(rq.error);});}
+async function idbClear(){const s=await idbTx('readwrite');return new Promise((res,rej)=>{const rq=s.clear();rq.onsuccess=()=>res();rq.onerror=()=>rej(rq.error);});}
+function imgKey(rid,type){return rid+':'+type;}
+
 /* ---------- persistence ---------- */
+// localStorage holds only text metadata; image slots are stored as markers (1/null).
 function save(){
-  state.id={};Object.keys(DEFAULTS).forEach(k=>{
-    state.id[k] = val(k);
-  });
-  try{localStorage.setItem(KEY,JSON.stringify(state));flashSave();}catch(e){toast('Penyimpanan penuh (gambar terlalu besar)',true);}
+  state.id={};Object.keys(DEFAULTS).forEach(k=>{ state.id[k]=val(k); });
+  try{
+    const meta={id:state.id,rows:state.rows.map(r=>{
+      const o=Object.assign({},r);IMG_TYPES.forEach(t=>{o[t]=r[t]?1:null;});return o;
+    })};
+    localStorage.setItem(KEY,JSON.stringify(meta));flashSave();
+  }catch(e){toast('Penyimpanan penuh',true);}
 }
-function load(){
+async function load(){
   let raw=null;try{raw=localStorage.getItem(KEY);}catch(e){}
   if(raw){try{state=JSON.parse(raw);}catch(e){state={id:{},rows:[]};}}
   if(!state.id||!Object.keys(state.id).length)state.id={...DEFAULTS};
   if(!Array.isArray(state.rows))state.rows=[];
   for(const k in DEFAULTS){setVal(k,state.id[k]??DEFAULTS[k]);}
-  render();
+  // classify image slots first so the initial paint never renders a bare marker as <img src>
+  const pending=[],legacy=[];
+  for(const r of state.rows){
+    for(const t of IMG_TYPES){
+      const v=r[t];
+      if(typeof v==='string'&&v.startsWith('data:')){legacy.push([r,t,v]);}   // old inline image: keep, migrate below
+      else if(v){r[t]=null;pending.push([r,t]);}                              // marker: fetch from IDB
+      else{r[t]=null;}
+    }
+  }
+  render(); // text + any legacy images now; pending slots show empty (no broken <img>)
+  for(const [r,t] of pending){ try{r[t]=await idbGet(imgKey(r.rid,t));}catch(e){r[t]=null;} }
+  if(pending.length)render();
+  if(legacy.length){                                                          // migrate inline images into IDB, then slim localStorage
+    for(const [r,t,v] of legacy){ try{await idbPut(imgKey(r.rid,t),v);}catch(e){} }
+    save();
+  }
 }
 function val(id){
   return document.getElementById(id).value;
@@ -381,8 +415,8 @@ function addRow(data){
   state.rows.push(r);render();save();
   return r;
 }
-function delRow(rid){state.rows=state.rows.filter(r=>r.rid!==rid);render();save();}
-function clearRows(){if(state.rows.length&&!confirm('Kosongkan seluruh daftar konten?'))return;state.rows=[];render();save();}
+function delRow(rid){state.rows=state.rows.filter(r=>r.rid!==rid);render();save();IMG_TYPES.forEach(t=>idbDel(imgKey(rid,t)).catch(()=>{}));}
+function clearRows(){if(state.rows.length&&!confirm('Kosongkan seluruh daftar konten?'))return;state.rows=[];render();save();idbClear().catch(()=>{});}
 function field(rid,k,v){const r=state.rows.find(x=>x.rid===rid);if(r){r[k]=v;save();if(k==='date')render();}}
 
 function render(){
@@ -423,12 +457,16 @@ function evSlot(r,type,labelTxt){
 
 /* ---------- images ---------- */
 function pickImage(rid,type){pendingUpload={rid,type};document.getElementById('fileInput').click();}
-function removeImage(rid,type){const r=state.rows.find(x=>x.rid===rid);if(r){r[type]=null;render();save();}}
+function removeImage(rid,type){const r=state.rows.find(x=>x.rid===rid);if(r){r[type]=null;render();save();idbDel(imgKey(rid,type)).catch(()=>{});}}
 document.getElementById('fileInput').addEventListener('change',function(e){
   const f=e.target.files[0];if(!f||!pendingUpload)return;
-  resizeImage(f,1080,1080,0.72).then(dataUrl=>{
-    const r=state.rows.find(x=>x.rid===pendingUpload.rid);
-    if(r){r[pendingUpload.type]=dataUrl;render();save();}
+  const rid=pendingUpload.rid,type=pendingUpload.type;
+  resizeImage(f,1080,1080,0.72).then(async dataUrl=>{
+    const r=state.rows.find(x=>x.rid===rid);
+    if(r){
+      r[type]=dataUrl;render();save();
+      try{await idbPut(imgKey(rid,type),dataUrl);}catch(err){toast('Gagal menyimpan gambar (penyimpanan penuh)',true);}
+    }
     pendingUpload=null;this.value='';
   }).catch(()=>{toast('Gagal memuat gambar',true);this.value='';});
 });
@@ -727,7 +765,7 @@ function resetAll(){
   if(!confirm('Kosongkan SEMUA isi data (identitas & seluruh daftar konten)? Tindakan ini tidak bisa dibatalkan.'))return;
   state={id:{},rows:[]};
   Object.keys(DEFAULTS).forEach(k=>setVal(k,''));
-  render();save();
+  render();save();idbClear().catch(()=>{});
 }
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function toast(msg,err){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');clearTimeout(t._t);t._t=setTimeout(()=>t.className='toast',2600);}
